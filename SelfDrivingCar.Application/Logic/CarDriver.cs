@@ -49,77 +49,77 @@ public class CarDriver
 
 	public bool DriveToNextWaypoint(CancellationToken cancellationToken = default)
 	{
-	       if (_currentRoadIndex >= _route.Count)
-	       {
-		       Console.WriteLine("✅ Destination reached!");
-		       _isActive = false;
-		       return false;
-	       }
+		if (_currentRoadIndex >= _route.Count)
+		{
+			Console.WriteLine("✅ Destination reached!");
+			_isActive = false;
+			return false;
+		}
 
-	       var road = _route[_currentRoadIndex];
-	       Coordinate from = road.From;
-	       Coordinate to = road.To;
-	       double distance = GeoMaths.CalculateDistance(from, to);
-	       _currentSpeed = road.SpeedLimit;
+		var road = _route[_currentRoadIndex];
+		Coordinate from = road.From;
+		Coordinate to = road.To;
+		double distance = GeoMaths.CalculateDistance(from, to);
+		_currentSpeed = road.SpeedLimit;
 
-	       Console.WriteLine($"🚦 Road {_currentRoadIndex + 1}/{_route.Count}");
-	       Console.WriteLine($"   From: ({from.Latitude:F2}, {from.Longitude:F2})");
-	       Console.WriteLine($"   To: ({to.Latitude:F2}, {to.Longitude:F2})");
-	       Console.WriteLine($"   Speed limit: {road.SpeedLimit} km/h");
-	       Console.WriteLine($"   Distance: {distance:F2} km");
+		Console.WriteLine($"🚦 Road {_currentRoadIndex + 1}/{_route.Count}");
+		Console.WriteLine($"   From: ({from.Latitude:F2}, {from.Longitude:F2})");
+		Console.WriteLine($"   To: ({to.Latitude:F2}, {to.Longitude:F2})");
+		Console.WriteLine($"   Speed limit: {road.SpeedLimit} km/h");
+		Console.WriteLine($"   Distance: {distance:F2} km");
 
-	       double timeInHours = distance / _currentSpeed;
-	       double timeInMinutes = timeInHours * 60;
-	       Console.WriteLine($"   ⏱️  Estimated time: {timeInMinutes:F1} minutes");
-	       Console.WriteLine();
+		double timeInHours = distance / _currentSpeed;
+		double timeInMinutes = timeInHours * 60;
+		Console.WriteLine($"   ⏱️  Estimated time: {timeInMinutes:F1} minutes");
+		Console.WriteLine();
 
-	       if (!TravelAlongRoad(from, to, timeInMinutes, cancellationToken))
-	       {
-		       // Interrupted
-		       return false;
-	       }
+		if (!TravelAlongRoad(from, to, timeInMinutes, cancellationToken))
+		{
+			// Interrupted
+			return false;
+		}
 
-	       _currentPosition = to;
-	       _currentRoadIndex++;
-	       return true;
+		_currentPosition = to;
+		_currentRoadIndex++;
+		return true;
 	}
 
 
 	private bool TravelAlongRoad(Coordinate from, Coordinate to, double timeInMinutes, CancellationToken cancellationToken = default)
 	{
-	       const int steps = 30;
-	       int totalDurationMs = (int)Math.Min(timeInMinutes * 100, 2000);
-	       int stepDelayMs = totalDurationMs / steps;
-	       _currentBearing = GeoMaths.CalculateBearing(from, to);
+		const int steps = 30;
+		int totalDurationMs = (int)Math.Min(timeInMinutes * 100, 2000);
+		int stepDelayMs = totalDurationMs / steps;
+		_currentBearing = GeoMaths.CalculateBearing(from, to);
 
-	       for (int step = 0; step <= steps; step++)
-	       {
-		       if (cancellationToken.IsCancellationRequested)
-		       {
-			       _isActive = false;
-			       return false;
-		       }
-		       double progress = (double)step / steps;
-		       double lat = from.Latitude + (to.Latitude - from.Latitude) * progress;
-		       double lon = from.Longitude + (to.Longitude - from.Longitude) * progress;
-		       _currentPosition = new Coordinate(lon, lat);
-		       if (step < steps)
-			       Thread.Sleep(stepDelayMs);
-	       }
-	       return true;
+		for (int step = 0; step <= steps; step++)
+		{
+			if (cancellationToken.IsCancellationRequested)
+			{
+				_isActive = false;
+				return false;
+			}
+			double progress = (double)step / steps;
+			double lat = from.Latitude + (to.Latitude - from.Latitude) * progress;
+			double lon = from.Longitude + (to.Longitude - from.Longitude) * progress;
+			_currentPosition = new Coordinate(lon, lat);
+			if (step < steps)
+				Thread.Sleep(stepDelayMs);
+		}
+		return true;
 	}
 
 	public void DriveFullRoute(CancellationToken cancellationToken = default)
 	{
-	       StartDriving();
-	       while (DriveToNextWaypoint(cancellationToken))
-	       {
-		       if (cancellationToken.IsCancellationRequested)
-		       {
-			       _isActive = false;
-			       return;
-		       }
-	       }
+		StartDriving();
+		while (DriveToNextWaypoint(cancellationToken))
+		{
+			if (cancellationToken.IsCancellationRequested)
+			{
+				_isActive = false;
+				return;
+			}
+		}
 	}
 
 	public void Reset()
