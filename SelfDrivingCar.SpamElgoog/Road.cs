@@ -1,7 +1,11 @@
-namespace SelfDrivingCar.GoogleMaps;
+using SelfDrivingCar.World;
 
-public struct Road {
-  public Coordinate From { get; set; }
-  public Coordinate To { get; set; }
-  public int SpeedLimit { get; set; }
+namespace SelfDrivingCar.SpamElgoog;
+
+public struct Road
+{
+	public Coordinate From { get; set; }
+	public Coordinate To { get; set; }
+	public int SpeedLimit { get; set; }
 }
+

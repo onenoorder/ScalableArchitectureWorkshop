@@ -1,4 +1,4 @@
-namespace SelfDrivingCar.GoogleMaps;
+namespace SelfDrivingCar.Application.World;
 
 public class Coordinate(double lon, double lat) {
   public double Longitude { get; set; } = lon;

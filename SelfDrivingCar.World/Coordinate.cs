@@ -1,4 +1,4 @@
-namespace SelfDrivingCar.TomTom;
+namespace SelfDrivingCar.World;
 
 public class Coordinate(double lon, double lat) {
   public double Longitude { get; set; } = lon;

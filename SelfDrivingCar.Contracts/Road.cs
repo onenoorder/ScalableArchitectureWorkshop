@@ -1,4 +1,4 @@
-namespace SelfDrivingCar.TomTom;
+namespace SelfDrivingCar.Application.World;
 
 public struct Road {
   public Coordinate From { get; set; }

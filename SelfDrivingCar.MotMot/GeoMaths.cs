@@ -1,12 +1,14 @@
-namespace SelfDrivingCar.GoogleMaps;
+using SelfDrivingCar.World;
+
+namespace SelfDrivingCar.TomTom;
 
 public class GeoMaths {
-  private const double EarthRadiusMiles = 3958.8;
+  private const double EarthRadiusKm = 6371.0;
 
   /// <summary>
   /// Calculates the distance between two coordinates using the Haversine formula
   /// </summary>
-  /// <returns>Distance in miles</returns>
+  /// <returns>Distance in kilometers</returns>
   public static double CalculateDistance(Coordinate a, Coordinate b)
   {
     var dLat = DegreesToRadians(b.Latitude - a.Latitude);
@@ -17,7 +19,7 @@ public class GeoMaths {
                     Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
     var centralAngle = 2 * Math.Atan2(Math.Sqrt(haversine), Math.Sqrt(1 - haversine));
-    var distance = EarthRadiusMiles * centralAngle;
+    var distance = EarthRadiusKm * centralAngle;
 
     return distance;
   }
@@ -46,12 +48,12 @@ public class GeoMaths {
   // <summary>
   /// Calculates a destination point given a starting point, bearing, and distance
   /// </summary>
-  public static Coordinate CalculateDestinationPoint(Coordinate start, double bearing, double distanceMiles)
+  public static Coordinate CalculateDestinationPoint(Coordinate start, double bearing, double distanceKm)
   {
     var latRad = DegreesToRadians(start.Latitude);
     var lonRad = DegreesToRadians(start.Longitude);
     var bearingRad = DegreesToRadians(bearing);
-    var angularDistance = distanceMiles / EarthRadiusMiles;
+    var angularDistance = distanceKm / EarthRadiusKm;
 
     var destLatRad = Math.Asin(
       Math.Sin(latRad) * Math.Cos(angularDistance) +
