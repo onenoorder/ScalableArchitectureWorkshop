@@ -244,7 +244,6 @@ public partial class MainWindow : Window
 								{
 									await ShowCrashDialog();
 									_startDrivingButton!.IsEnabled = true;
-									Console.WriteLine($"✅ Crash dialog closed, button re-enabled, _isCurrentlyDriving={_isCurrentlyDriving}");
 								});
 							});
 
@@ -273,7 +272,6 @@ public partial class MainWindow : Window
 					// Stop when driving is complete
 					if (!_carDriver.IsActive)
 					{
-						Console.WriteLine($"✅ COMPLETION CHECK: IsActive={_carDriver.IsActive}, stopping timer");
 						var totalTime = DateTime.Now - startTime;
 						timer.Stop();
 						_isCurrentlyDriving = false;
@@ -284,7 +282,6 @@ public partial class MainWindow : Window
 						}
 						Console.WriteLine($"=== Driving Completed === (Duration: {totalTime.TotalSeconds:F1}s, Total updates: {updateCount})");
 						_startDrivingButton!.IsEnabled = true;
-						Console.WriteLine($"✅ Button re-enabled, _isCurrentlyDriving={_isCurrentlyDriving}");
 					}
 				}
 			}
@@ -312,10 +309,8 @@ public partial class MainWindow : Window
 			try
 			{
 				Console.WriteLine("🚗 Calling CarDriver.StartDriving() on background thread");
-				Console.WriteLine($"🚗 IsActive before: {_carDriver.IsActive}");
 				_carDriver.StartDriving(_currentStartNode, _currentEndNode);
 				Console.WriteLine("🚗 StartDriving completed");
-				Console.WriteLine($"🚗 IsActive after: {_carDriver.IsActive}");
 			}
 			catch (Exception ex)
 			{

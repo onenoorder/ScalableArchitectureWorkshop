@@ -1,8 +1,6 @@
 using SelfDrivingCar.SpamElgoog;
 using SelfDrivingCar.TomTom;
 using SelfDrivingCar.World;
-using Road = SelfDrivingCar.World.Road;
-
 namespace SelfDrivingCar.Car;
 
 public class CarDriver
