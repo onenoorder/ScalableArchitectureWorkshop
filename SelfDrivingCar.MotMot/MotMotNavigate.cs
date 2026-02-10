@@ -61,6 +61,21 @@ public class MotMotNavigate(Map worldMap) {
     Console.WriteLine($"No route found from {start.Name} to {end.Name}");
     return null;
   }
+  
+  public double GetSpeedCorrection(Road road, double currentSpeed)
+  {
+    return road.SpeedLimit - currentSpeed;
+  }
+
+  public double GetBearingCorrection(Road road, double currentBearing)
+  {
+    return road.Bearing - currentBearing;
+  }
+
+  public double GetDistance(Road road)
+  {
+    return road.Distance;
+  }
 
   private List<Road> ReconstructPath(
     Dictionary<string, (Node node, int speedLimit)> previous,

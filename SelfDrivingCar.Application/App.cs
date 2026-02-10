@@ -37,8 +37,8 @@ public sealed class App : Avalonia.Application
 	private void CreateAndSetupWindow(IClassicDesktopStyleApplicationLifetime desktop)
 	{
       carController = new CarDriver(motMotNavigate);
-
-		mainWindow = new MainWindow();
+	  mainWindow = new MainWindow();
+	  
 		if (currentMap != null)
 		{
 			mainWindow.SetMap(currentMap);

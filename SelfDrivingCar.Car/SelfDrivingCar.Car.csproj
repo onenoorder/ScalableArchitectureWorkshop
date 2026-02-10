@@ -11,8 +11,4 @@
       <ProjectReference Include="..\SelfDrivingCar.SpamElgoog\SelfDrivingCar.SpamElgoog.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="InternalTools\" />
-    </ItemGroup>
-
 </Project>

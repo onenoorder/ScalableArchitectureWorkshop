@@ -300,15 +300,15 @@ public class MapCanvas : Control
 					// Draw realistic road with black asphalt and white center line
 
 					// Layer 1: Road shadow/edge (darkest, widest)
-					var shadowPen = new Pen(new SolidColorBrush(Color.FromRgb(20, 20, 20)), 6);
+					var shadowPen = new Pen(new SolidColorBrush(Color.FromRgb(20, 20, 20)), 10);
 					context.DrawLine(shadowPen, startPos, endPos);
 
 					// Layer 2: Road asphalt (black)
-					var roadPen = new Pen(new SolidColorBrush(Color.FromRgb(40, 40, 40)), 4);
+					var roadPen = new Pen(new SolidColorBrush(Color.FromRgb(40, 40, 40)), 6);
 					context.DrawLine(roadPen, startPos, endPos);
 
 					// Layer 3: Road edge/border (slight highlight on one side)
-					var edgePen = new Pen(new SolidColorBrush(Color.FromRgb(80, 80, 80)), 0.5);
+					var edgePen = new Pen(new SolidColorBrush(Color.FromRgb(80, 80, 80)), 1);
 					// Draw edge offset slightly
 					double dx = endPos.X - startPos.X;
 					double dy = endPos.Y - startPos.Y;
@@ -323,7 +323,7 @@ public class MapCanvas : Control
 					}
 
 					// Layer 4: Center line (white dashed)
-					var centerPen = new Pen(new SolidColorBrush(Color.FromRgb(255, 255, 255)), 1.5);
+					var centerPen = new Pen(new SolidColorBrush(Color.FromRgb(255, 255, 255)), 2.5);
 					DrawDashedLine(context, centerPen, startPos, endPos, 8);
 
 					// Calculate midpoint and perpendicular offset for sign

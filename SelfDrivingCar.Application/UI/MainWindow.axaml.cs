@@ -25,8 +25,8 @@ public partial class MainWindow : Window
 	private Map? _currentMap;
 	private List<Node>? _currentRouteNodes; // Track the node sequence for crash detection
 	private DateTime _offRoadStartTime = DateTime.MinValue;
-	private const double OFF_ROAD_TOLERANCE_KM = 0.25; // Tolerance for being "on road" (250 meters)
-	private const double OFF_ROAD_CRASH_THRESHOLD_SECONDS = 2.0; // Time before crash
+	private const double OFF_ROAD_TOLERANCE_KM = 0.20; // Tolerance for being "on road" (200 meters)
+	private const double OFF_ROAD_CRASH_THRESHOLD_SECONDS = 1.5; // Time before crash
 
 	// Speed violation tracking
 	private int _totalFineAmount = 0;
@@ -197,6 +197,9 @@ public partial class MainWindow : Window
 		var startTime = DateTime.Now;
 		_offRoadStartTime = DateTime.MinValue;
 
+		CancellationTokenSource cancellationTokenSource = new();
+		CancellationToken cancellationToken = cancellationTokenSource.Token;
+
 		timer.Tick += (s, args) =>
 		{
 			try
@@ -231,6 +234,7 @@ public partial class MainWindow : Window
 							// Trigger explosion animation at car's last position
 							_mapCanvas.TriggerExplosion(_carDriver.CurrentPosition);
 							_mapCanvas.ShowCar(false);
+							cancellationTokenSource.Cancel();
 
 							if (_statusText != null)
 							{
@@ -309,7 +313,7 @@ public partial class MainWindow : Window
 			try
 			{
 				Console.WriteLine("🚗 Calling CarDriver.StartDriving() on background thread");
-				_carDriver.StartDriving(_currentStartNode, _currentEndNode);
+				_carDriver.StartDriving(_currentStartNode, _currentEndNode, cancellationToken);
 				Console.WriteLine("🚗 StartDriving completed");
 			}
 			catch (Exception ex)
@@ -421,17 +425,33 @@ public partial class MainWindow : Window
 		// Exit button
 		var exitButton = new Button
 		{
-			Content = "Exit Application",
-			Width = 150,
+			Content = "Exit",
+			Padding = new Thickness(10,0,10,0),
+			Width = 100,
 			Height = 40,
 			Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
 			Background = new SolidColorBrush(Color.FromRgb(220, 53, 69)),
-			FontSize = 12
+			FontSize = 15
+		};
+		var closeButton = new Button
+		{
+			Content = "Close",
+			Padding = new Thickness(10,0,10,0),
+			Width = 100,
+			Height = 40,
+			Foreground = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+			Background = new SolidColorBrush(Color.FromRgb(50, 150, 250)),
+			FontSize = 15
 		};
 
 		exitButton.Click += (s, e) =>
 		{
 			Environment.Exit(0);
+		};
+
+		closeButton.Click += (s, e) =>
+		{
+			crashDialog.Close();
 		};
 
 		// Add controls to panel
@@ -443,7 +463,19 @@ public partial class MainWindow : Window
 		{
 			HorizontalAlignment = HorizontalAlignment.Center
 		};
-		buttonContainer.Child = exitButton;
+		
+		var buttonPanel = new StackPanel
+		{
+			Orientation = Orientation.Horizontal,
+			Spacing = 10,
+			VerticalAlignment = VerticalAlignment.Center,
+			HorizontalAlignment = HorizontalAlignment.Center
+		};
+		
+		buttonPanel.Children.Add(closeButton);
+		buttonPanel.Children.Add(exitButton);
+
+		buttonContainer.Child = buttonPanel;
 		stackPanel.Children.Add(buttonContainer);
 
 		// Wrap panel in border for padding

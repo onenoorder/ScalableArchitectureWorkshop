@@ -25,8 +25,7 @@ public class WorldNavigate
 		var distances = new Dictionary<string, double>();
 		var previous = new Dictionary<string, Node>();
 		var unvisited = new HashSet<string>();
-
-		// Initialize distances
+		
 		foreach (var node in _worldMap.Nodes)
 		{
 			distances[node.Id] = double.MaxValue;
@@ -34,14 +33,12 @@ public class WorldNavigate
 		}
 
 		distances[start.Id] = 0;
-
-		// Dijkstra's algorithm
+		
 		while (unvisited.Count > 0)
 		{
 			string? currentId = null;
 			double minDistance = double.MaxValue;
-
-			// Find unvisited node with minimum distance
+			
 			foreach (var id in unvisited)
 			{
 				if (distances[id] < minDistance)
@@ -59,11 +56,9 @@ public class WorldNavigate
 			var currentNode = _worldMap.GetNodeById(currentId);
 			if (currentNode == null) continue;
 
-			// Check if we reached the destination
 			if (currentNode.Id == end.Id)
 				break;
-
-			// Update distances to neighbors
+			
 			var connections = _worldMap.GetConnections(currentNode);
 			foreach (var (destination, distance, speedLimit) in connections)
 			{
@@ -75,8 +70,7 @@ public class WorldNavigate
 				}
 			}
 		}
-
-		// Reconstruct path
+		
 		if (distances[end.Id] == double.MaxValue)
 			return null; // No path found
 
